@@ -60,11 +60,9 @@ int decoder(FILE *file) {
 
     //printf("width: %d, height: %d", width, height);
 
-    uint8_t red[width * height];
-    uint8_t green[width * height];
-    uint8_t blue[width * height];
-    uint8_t alpha[width * height];
+    uint8_t color[width * height * 4];
     uint16_t index = 0;
+    uint16_t temp_index = index;
 
     uint8_t pred = 0;
     uint8_t pgreen = 0;
@@ -81,12 +79,60 @@ int decoder(FILE *file) {
         //printf("%d, ", c);
 
         if (c == QOI_OP_RGB) {
-            red[]
+            color[index++] = fgetc(file);
+            color[index++] = fgetc(file);
+            color[index++] = fgetc(file);
+            color[index++] = palpha;
         } else if (c == QOI_OP_RGBA) {
+            color[index++] = fgetc(file);
+            color[index++] = fgetc(file);
+            color[index++] = fgetc(file);
+            color[index++] = fgetc(file);
+        } else if (c >> 6 == 0b01) { //QOI_OP_LUMA
+            color[index++] = ((c >> 4) & 0x03) - 2;
+            color[index++] = ((c >> 2) & 0x03) - 2;
+            color[index++] = (c        & 0x03) - 2;
+            temp_index = index;
+            color[index++] = color[temp_index-4];
+        } else if (c >> 6 == 0b11) {
+            uint8_t green_dif = c - 0b11000000;
+            c = fgetc(file);
+            uint8_t red_dif = (c >> 4) + green_dif;
+            uint8_t blue_dif = c - (c >> 4) + green_dif;
+            red_dif = -(red_dif >> 3) * 16 + red_dif; //from unsigned to signed
+            blue_dif = -(blue_dif >> 3) * 16 + blue_dif;
 
+            temp_index = index;
+            color[index++] = red_dif + color[temp_index-3];
+            temp_index = index;
+            color[index++] = green_dif + color[temp_index-3];
+            temp_index = index;
+            color[index++] = blue_dif + color[temp_index-3];
+            temp_index = index;
+            color[index++] = color[temp_index-4];
+        } else if (c >> 6 == 0b11) {
+            uint8_t length = c & 0b00111111;
+
+            uint8_t pr = color[index-3];
+            uint8_t pg = color[index-2];
+            uint8_t pb = color[index-1];
+            uint8_t pa = color[index-0];
+            for (int i = 0; i < length; i++) {
+                color[index++] = pr;
+                color[index++] = pg;
+                color[index++] = pb;
+                color[index++] = pa;
+            }
+        } else if (c >> 6 == 0b00) {
+            
         }
 
         if ((char)c == EOF) break;
+        index++;
+    }
+
+    for (int i = 0; i < width * height; i++) {
+        printf("%d, %d, %d, %d\n", color[i], color[i+1], color[i+2], color[i+3]);
     }
 
     return 1;
