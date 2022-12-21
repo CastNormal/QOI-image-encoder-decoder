@@ -8,25 +8,10 @@ uint8_t rgb_pixels[] = {165,102,81,165,102,81,146,90,72,134,111,105,187,109,88,1
 
 #define QOI_OP_RGB 0b11111110
 #define QOI_OP_RGBA 0b11111111
-
-/*
-//RGB
-8-bit tag b11111110
-8-bit   red channel value
-8-bit green channel value
-8-bit  blue channel value
-
-alpha value is same as previous pixel
-*/
-
-/*
-//RGBA
-8-bit tag b11111111
-8-bit   red channel value
-8-bit green channel value
-8-bit  blue channel value
-8-bit alpha channel value
-*/
+#define QOI_OP_INDEX 0b00
+#define QOI_OP_DIFF 0b01
+#define QOI_OP_LUMA 0b10
+#define QOI_OP_RUN 0b11
 
 
 struct qoi_header {
@@ -77,6 +62,8 @@ int decoder(FILE *file) {
     while (1) {
         c = fgetc(file);
         //printf("%d, ", c);
+	    
+	if (index == width * height * 4 - 1) break;
 
         if (c == QOI_OP_RGB) {
             color[index++] = fgetc(file);
@@ -88,13 +75,13 @@ int decoder(FILE *file) {
             color[index++] = fgetc(file);
             color[index++] = fgetc(file);
             color[index++] = fgetc(file);
-        } else if (c >> 6 == 0b01) { //QOI_OP_LUMA
+        } else if (c >> 6 == QOI_OP_DIFF) { //QOI_OP_LUMA
             color[index++] = ((c >> 4) & 0x03) - 2;
             color[index++] = ((c >> 2) & 0x03) - 2;
             color[index++] = (c        & 0x03) - 2;
             temp_index = index;
             color[index++] = color[temp_index-4];
-        } else if (c >> 6 == 0b11) {
+        } else if (c >> 6 == QOI_OP_LUMA) {
             uint8_t green_dif = c - 0b11000000;
             c = fgetc(file);
             uint8_t red_dif = (c >> 4) + green_dif;
@@ -110,8 +97,8 @@ int decoder(FILE *file) {
             color[index++] = blue_dif + color[temp_index-3];
             temp_index = index;
             color[index++] = color[temp_index-4];
-        } else if (c >> 6 == 0b11) {
-            uint8_t length = c & 0b00111111;
+        } else if (c >> 6 == QOI_OP_RUN) {
+            uint8_t length = (c & 0b00111111)+1;
 
             uint8_t pr = color[index-3];
             uint8_t pg = color[index-2];
@@ -123,11 +110,11 @@ int decoder(FILE *file) {
                 color[index++] = pb;
                 color[index++] = pa;
             }
-        } else if (c >> 6 == 0b00) {
+        } else if (c >> 6 == QOI_OP_INDEX) {
             
         }
 
-        if ((char)c == EOF) break;
+        if ((char)c == EOF) break; //shouldn't be executed anyways
         index++;
     }
 
