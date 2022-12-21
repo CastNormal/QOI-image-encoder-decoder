@@ -70,21 +70,17 @@ int decoder(FILE *file) {
             temp_index = index;
             color[index++] = color[temp_index-4];
         } else if (c >> 6 == QOI_OP_LUMA) {
-            uint8_t green_dif = c - 0b11000000;
-            c = fgetc(file);
-            uint8_t red_dif = (c >> 4) + green_dif;
-            uint8_t blue_dif = c - (c >> 4) + green_dif;
-            red_dif = -(red_dif >> 3) * 16 + red_dif; //from unsigned to signed
-            blue_dif = -(blue_dif >> 3) * 16 + blue_dif;
+            uint8_t green_dif = (c & 0x00111111) - 32;
+	    c = fgetc(file);
 
-            temp_index = index;
-            color[index++] = red_dif + color[temp_index-3];
-            temp_index = index;
-            color[index++] = green_dif + color[temp_index-3];
-            temp_index = index;
-            color[index++] = blue_dif + color[temp_index-3];
-            temp_index = index;
-            color[index++] = color[temp_index-3];
+            color[index] = ((c >> 4) - 8 + green_dif) + color[temp_index-3];
+	    index++;
+            color[index] = green_dif + color[temp_index-3];
+	    index++;
+            color[index] = ((c & 0x00001111) - 8 + green_dif) + color[temp_index-3];
+	    index++;
+            color[index] = color[temp_index-3];
+	    index++;
         } else if (c >> 6 == QOI_OP_RUN) {
             uint8_t length = (c & 0b00111111)+1;
 
