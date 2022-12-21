@@ -47,16 +47,6 @@ int decoder(FILE *file) {
     uint16_t index = 0;
     uint16_t temp_index = index;
 
-    uint8_t pred = 0;
-    uint8_t pgreen = 0;
-    uint8_t pblue = 0;
-    uint8_t palpha = 255;
-
-    uint8_t cred = 0;
-    uint8_t cgreen = 0;
-    uint8_t cblue = 0;
-    uint8_t calpha = 255;
-
     while (1) {
         c = fgetc(file);
         //printf("%d, ", c);
@@ -67,7 +57,7 @@ int decoder(FILE *file) {
             color[index++] = fgetc(file);
             color[index++] = fgetc(file);
             color[index++] = fgetc(file);
-            color[index++] = palpha;
+            color[index++] = (index < 4) ?;
         } else if (c == QOI_OP_RGBA) {
             color[index++] = fgetc(file);
             color[index++] = fgetc(file);
@@ -94,7 +84,7 @@ int decoder(FILE *file) {
             temp_index = index;
             color[index++] = blue_dif + color[temp_index-3];
             temp_index = index;
-            color[index++] = color[temp_index-4];
+            color[index++] = color[temp_index-3];
         } else if (c >> 6 == QOI_OP_RUN) {
             uint8_t length = (c & 0b00111111)+1;
 
