@@ -124,6 +124,8 @@ void qoi_encoder(uint8_t *pixels, QOI_header_info info, char* file_name) {
 
     for (int i = 0; i < 7; i++) fputc(0, file);
     fputc(1, file);
+
+	fclose(file);
 }
 
 uint8_t* qoi_decoder(FILE *file, QOI_header_info *h_info) {
