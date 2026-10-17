@@ -91,8 +91,48 @@ int main() {
 
 ## API Reference
 
-- ```void qoi_encoder(uint8_t *pixels, QOI_header_info info, char* file_name): Encodes raw data into memory.```
-- ```uint8_t *qoi_decoder(FILE *file, QOI_header_info *info): Decodes QOI bytes from memory.```
+### qoi_encoder
+
+```text
+void qoi_encoder(
+    uint8_t *pixels,
+    QOI_header_info info,
+    char *file_name
+);
+```
+Encodes raw RGB or RGBA pixel data into a QOI image file.
+
+#### Parameters:
+
+pixels: Pointer to the raw input pixel buffer.
+
+info: Image dimensions, channel count, and colour-space information.
+
+file_name: Destination filename for the encoded image.
+
+Returns: void.
+
+### qoi_decoder
+
+```text
+uint8_t *qoi_decoder(
+    FILE *file,
+    QOI_header_info *info
+);
+```
+Decodes a QOI image from an open file stream.
+
+#### Parameters:
+
+file: Pointer to an open QOI file in binary-read mode.
+
+info: Pointer to a structure populated with the decoded image metadata.
+
+Returns: A pointer to the dynamically allocated decoded pixel buffer, or NULL if decoding fails.
+
+The caller is responsible for closing the file stream and freeing the returned pixel buffer.
+
+
 
 ## Reference
 
