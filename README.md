@@ -51,7 +51,7 @@ free(pixel_data);
 
 ## API Reference
 
-```void qoi_encoder(uint8_t *pixels, QOI_header_info info, char* file_name): Encodes raw data into memory.```
-```uint8_t *qoi_decoder(FILE *file, QOI_header_info *info): Decodes QOI bytes from memory.```
+- ```void qoi_encoder(uint8_t *pixels, QOI_header_info info, char* file_name): Encodes raw data into memory.```
+- ```uint8_t *qoi_decoder(FILE *file, QOI_header_info *info): Decodes QOI bytes from memory.```
 
 ## Refe
