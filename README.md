@@ -54,4 +54,6 @@ free(pixel_data);
 - ```void qoi_encoder(uint8_t *pixels, QOI_header_info info, char* file_name): Encodes raw data into memory.```
 - ```uint8_t *qoi_decoder(FILE *file, QOI_header_info *info): Decodes QOI bytes from memory.```
 
-## Refe
+## Reference
+
+Official QOI Specification [https://qoiformat.org/qoi-specification.pdf] — The official specification document detailing the file format, chunk structures, and encoding/decoding rules.
