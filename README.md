@@ -5,10 +5,24 @@ QOI is an image format that achieves compression ratios comparable to PNG while 
 - Header-Only: Easy to integrate into any existing C or C++ project—just drop QOIc.h into your codebase.
 - High Performance: Designed with speed and simplicity in mind.
 - Full Support: Handles both RGB (24-bit) and RGBA (32-bit) image channels.
-- Minimal Dependencies: Built on standard C libraries.
+- Minimal Dependencies: Built on standard C libraries (```<stdio.h>```, ```<string.h>```, ```<stdlib.h>```, etc.)
 ## Getting Started
  -Installation
 Since this is a header-only library, simply copy QOIc.h into your project directory and include it where needed.
+
+## Data Structures
+```text
+typedef struct {
+    uint8_t r, g, b, a;
+} rgba8_t;
+
+typedef struct {
+    uint32_t width;
+    uint32_t height;
+    uint8_t channels;
+    uint8_t colorspace;
+} QOI_header_info;
+```
 
 ## Code Exemples
 
