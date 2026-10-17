@@ -29,38 +29,64 @@ typedef struct {
 ### Encoder
 
 ```text
-QOI_header_info info = {
-    width = 800,
-    height = 600,
-    channels = 4, // 3 for RGB, 4 for RGBA
-    colorspace = QOI_SRGB
-};
+#include <stdio.h>
+#include <stdlib.h>
+#include "QOIc.h"
 
-// pixel_data is a pointer to raw RGBA/RGB bytes
-qoi_encoder(uint8_t *pixel_buffer, QOI_header_info info, "image.qoi");
+int main() {
+    int width = 800;
+    int height = 600;
+    int channels = 4; // 3 for RGB, 4 for RGBA
+    
+    // Allocate or load your raw pixel buffer
+    uint32_t size = width * height * channels;
+    uint8_t *pixels = (uint8_t *)malloc(size);
+    // Fill pixel data...
+
+    QOI_header_info info = {
+        width = width,
+        height = height,
+        channels = channels,
+        colorspace = 0 // e.g., 0 for sRGB with linear alpha, 1 for all linear
+    };
+
+    qoi_encoder(pixels, info, "output.qoi");
+
+    free(pixels);
+    return 0;
+}
 ```
 
 ### Decoder
 
 ```text
-FILE *file = open("image.qoi");
+#include <stdio.h>
+#include <stdlib.h>
+#include "QOIc.h"
 
-if (file == NULL) {
-  //Handle error 
+int main() {
+    FILE *file = fopen("image.qoi", "rb");
+    if (!file) {
+        perror("Failed to open file");
+        return 1;
+    }
+
+    QOI_header_info info;
+    uint8_t *pixels = qoi_decoder(file, &info);
+    fclose(file);
+
+    if (pixels == NULL) {
+        fprintf(stderr, "Failed to decode QOI image.\n");
+        return 1;
+    }
+
+    printf("Decoded image: %ux%u with %u channels\n", info.width, info.height, info.channels);
+
+    // Use pixel buffer...
+
+    free(pixels);
+    return 0;
 }
-
-QOI_header_info info;
-
-void *pixel_data = qoi_decoder(file, &info);
-
-if (pixel_data == NULL) {
-    // Handle error
-}
-
-// Use pixel_data...
-
-// Free the pixel data when done
-free(pixel_data);
 ```
 
 ## API Reference
