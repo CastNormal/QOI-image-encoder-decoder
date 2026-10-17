@@ -56,4 +56,4 @@ free(pixel_data);
 
 ## Reference
 
-Official QOI Specification [https://qoiformat.org/qoi-specification.pdf] — The official specification document detailing the file format, chunk structures, and encoding/decoding rules.
+Official QOI Specification [https://qoiformat.org/qoi-specification.pdf]: The official specification document detailing the file format, chunk structures, and encoding/decoding rules.
