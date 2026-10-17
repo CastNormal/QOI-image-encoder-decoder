@@ -44,10 +44,10 @@ int main() {
     // Fill pixel data...
 
     QOI_header_info info = {
-        width = width,
-        height = height,
-        channels = channels,
-        colorspace = 0 // e.g., 0 for sRGB with linear alpha, 1 for all linear
+        .width = width,
+        .height = height,
+        .channels = channels,
+        .colorspace = 0 // e.g., 0 for sRGB with linear alpha, 1 for all linear
     };
 
     qoi_encoder(pixels, info, "output.qoi");
