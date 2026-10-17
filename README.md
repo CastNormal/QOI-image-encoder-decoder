@@ -1,6 +1,6 @@
 # QOI Image Encoder / Decoder (QOIc.h)
 A lightweight, header-only C implementation of the QOI (Quite OK Image Format) encoder and decoder.
-QOI is an image format that achieves compression ratios comparable to PNG while offering dramatically faster encoding and decoding speeds (typically 20x–50x faster encoding and 3x–4x faster decoding than standard PNG implementations).
+QOI is an image format that achieves compression ratios comparable to PNG while offering dramatically faster encoding and decoding speeds.
 ## Features
 - Header-Only: Easy to integrate into any existing C or C++ project—just drop QOIc.h into your codebase.
 - High Performance: Designed with speed and simplicity in mind.
